@@ -1,0 +1,439 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-16 md:py-24 relative overflow-hidden">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 opacity-10">
+        <div class="absolute top-0 left-0 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"></div>
+        <div class="absolute top-0 right-0 w-72 h-72 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse animation-delay-2000"></div>
+        <div class="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse animation-delay-4000"></div>
+    </div>
+    
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="flex flex-col md:flex-row items-center justify-between">
+            <div class="md:w-1/2 mb-8 md:mb-0">
+                <div class="inline-flex items-center px-3 py-1 rounded-full bg-blue-500 bg-opacity-20 text-blue-200 text-sm font-medium mb-6">
+                    <i class="fas fa-star mr-2"></i> Discover Amazing Events at UAP
+                </div>
+                <h1 class="text-4xl md:text-6xl font-bold mb-4 leading-tight">Find Your Next <span class="text-yellow-300 bg-gradient-to-r from-yellow-300 to-yellow-500 bg-clip-text text-transparent">Experience</span></h1>
+                <p class="text-xl text-blue-100 mb-8 max-w-lg">Discover, book, and enjoy the best workshops, conferences, ragdays and more. Your next unforgettable experience is just a click away.</p>
+                <div class="flex flex-wrap gap-4">
+                    <a href="#" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-blue-700 bg-white hover:bg-blue-50 transition duration-300 transform hover:-translate-y-1 shadow-lg">
+                        <i class="fas fa-search mr-2"></i> Explore Events
+                    </a>
+                    <a href="#" class="inline-flex items-center justify-center px-6 py-3 border border-white text-base font-medium rounded-lg text-white hover:bg-blue-700 transition duration-300 transform hover:-translate-y-1">
+                        <i class="fas fa-calendar-plus mr-2"></i> Create Event
+                    </a>
+                </div>
+                
+                <!-- Stats -->
+                <div class="flex flex-wrap gap-6 mt-12">
+                    <div class="flex items-center">
+                        <div class="text-3xl font-bold">50+</div>
+                        <div class="ml-2 text-blue-200">Events</div>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="text-3xl font-bold">10K+</div>
+                        <div class="ml-2 text-blue-200">Users</div>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="text-3xl font-bold">5+</div>
+                        <div class="ml-2 text-blue-200">Organizers</div>
+                    </div>
+                </div>
+            </div>
+            <div class="md:w-1/2 flex justify-center relative">
+                <div class="relative">
+                    <img src="https://i.postimg.cc/fW2vc46F/uap-campus.jpg" alt="Event experience" class="rounded-2xl shadow-2xl transform rotate-2 w-full max-w-lg">
+                    
+                    <!-- Floating Elements -->
+                    <div class="absolute -top-4 -left-4 bg-white rounded-xl shadow-lg p-4 w-40">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-600">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="ml-3">
+                                <div class="text-sm font-bold text-gray-900">Sold Out</div>
+                                <div class="text-xs text-gray-500">Cultural Festival</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="absolute -bottom-4 -right-4 bg-white rounded-xl shadow-lg p-4 w-48">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600">
+                                <i class="fas fa-fire"></i>
+                            </div>
+                            <div class="ml-3">
+                                <div class="text-sm font-bold text-gray-900">Trending</div>
+                                <div class="text-xs text-gray-500">Tech Conference</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Search Section -->
+<section class="py-8 bg-white">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-2xl shadow-xl p-6 -mt-16 relative z-10 border border-gray-100">
+            <h3 class="text-xl font-bold text-gray-800 mb-4">Find Your Perfect Event</h3>
+            <form class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <i class="fas fa-search text-gray-400"></i>
+                    </div>
+                    <input type="text" class="pl-10 w-full py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="Search events...">
+                </div>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <i class="fas fa-map-marker-alt text-gray-400"></i>
+                    </div>
+                    <select class="pl-10 w-full py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                        <option>All Locations</option>
+                        <option>Dhaka</option>
+                        <option>Rajshahi</option>
+                        <option>Chittagong</option>
+                        <option>Barishal</option>
+                        <option>More</option>
+                    </select>
+                </div>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <i class="fas fa-calendar text-gray-400"></i>
+                    </div>
+                    <input type="date" class="pl-10 w-full py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                </div>
+                <div>
+                    <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium py-3 px-4 rounded-lg transition duration-300 transform hover:-translate-y-1 shadow-md">
+                        <i class="fas fa-ticket-alt mr-2"></i> Find Events
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Categories -->
+<section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900">Explore Event Categories</h2>
+            <p class="mt-4 text-xl text-gray-600">Find the perfect event that matches your interests</p>
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+            <!-- Category 1 -->
+            <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all p-6 text-center group hover:-translate-y-2 transform duration-300 border border-transparent hover:border-blue-200">
+                <div class="inline-flex items-center justify-center w-16 h-16 mb-4 bg-gradient-to-br from-blue-100 to-blue-50 text-blue-600 rounded-2xl group-hover:from-blue-600 group-hover:to-indigo-600 group-hover:text-white transition-all duration-300 shadow-sm">
+                    <i class="fas fa-music text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 group-hover:text-blue-700 transition">Concerts</h3>
+                <p class="mt-2 text-sm text-gray-500">120+ Events</p>
+            </div>
+            
+            <!-- Category 2 -->
+            <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all p-6 text-center group hover:-translate-y-2 transform duration-300 border border-transparent hover:border-blue-200">
+                <div class="inline-flex items-center justify-center w-16 h-16 mb-4 bg-gradient-to-br from-blue-100 to-blue-50 text-blue-600 rounded-2xl group-hover:from-blue-600 group-hover:to-indigo-600 group-hover:text-white transition-all duration-300 shadow-sm">
+                    <i class="fas fa-utensils text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 group-hover:text-blue-700 transition">Food & Drink</h3>
+                <p class="mt-2 text-sm text-gray-500">85+ Events</p>
+            </div>
+            
+            <!-- Category 3 -->
+            <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all p-6 text-center group hover:-translate-y-2 transform duration-300 border border-transparent hover:border-blue-200">
+                <div class="inline-flex items-center justify-center w-16 h-16 mb-4 bg-gradient-to-br from-blue-100 to-blue-50 text-blue-600 rounded-2xl group-hover:from-blue-600 group-hover:to-indigo-600 group-hover:text-white transition-all duration-300 shadow-sm">
+                    <i class="fas fa-laptop-code text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 group-hover:text-blue-700 transition">Tech</h3>
+                <p class="mt-2 text-sm text-gray-500">95+ Events</p>
+            </div>
+            
+            <!-- Category 4 -->
+            <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all p-6 text-center group hover:-translate-y-2 transform duration-300 border border-transparent hover:border-blue-200">
+                <div class="inline-flex items-center justify-center w-16 h-16 mb-4 bg-gradient-to-br from-blue-100 to-blue-50 text-blue-600 rounded-2xl group-hover:from-blue-600 group-hover:to-indigo-600 group-hover:text-white transition-all duration-300 shadow-sm">
+                    <i class="fas fa-paint-brush text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 group-hover:text-blue-700 transition">Arts</h3>
+                <p class="mt-2 text-sm text-gray-500">70+ Events</p>
+            </div>
+            
+            <!-- Category 5 -->
+            <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all p-6 text-center group hover:-translate-y-2 transform duration-300 border border-transparent hover:border-blue-200">
+                <div class="inline-flex items-center justify-center w-16 h-16 mb-4 bg-gradient-to-br from-blue-100 to-blue-50 text-blue-600 rounded-2xl group-hover:from-blue-600 group-hover:to-indigo-600 group-hover:text-white transition-all duration-300 shadow-sm">
+                    <i class="fas fa-futbol text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 group-hover:text-blue-700 transition">Sports</h3>
+                <p class="mt-2 text-sm text-gray-500">110+ Events</p>
+            </div>
+            
+            <!-- Category 6 -->
+            <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all p-6 text-center group hover:-translate-y-2 transform duration-300 border border-transparent hover:border-blue-200">
+                <div class="inline-flex items-center justify-center w-16 h-16 mb-4 bg-gradient-to-br from-blue-100 to-blue-50 text-blue-600 rounded-2xl group-hover:from-blue-600 group-hover:to-indigo-600 group-hover:text-white transition-all duration-300 shadow-sm">
+                    <i class="fas fa-film text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 group-hover:text-blue-700 transition">Cinema</h3>
+                <p class="mt-2 text-sm text-gray-500">60+ Events</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Events -->
+<section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-end mb-10">
+            <div>
+                <h2 class="text-3xl font-bold text-gray-900">Featured Events</h2>
+                <p class="mt-2 text-lg text-gray-600">Don't miss out on these popular events</p>
+            </div>
+            <a href="#" class="text-blue-600 hover:text-blue-800 font-medium flex items-center group">
+                View All <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+            </a>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Event Card 1 -->
+            <div class="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
+                <div class="relative">
+                    <img src="https://i.postimg.cc/8cfgm2bG/Flim-Photo-View-Finder-Season-7.jpg" alt="Event" class="w-full h-48 object-cover">
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent h-16"></div>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center text-sm text-gray-500 mb-3">
+                        <i class="far fa-calendar mr-2 text-blue-600"></i> Feb 4, 2025
+                        <span class="mx-2">•</span>
+                        <i class="far fa-clock mr-2 text-blue-600"></i> 10:00 AM
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">The View Finder Season-7</h3>
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-map-marker-alt text-blue-600 mr-2"></i>
+                        <span class="text-gray-600">Void, CSE Department, UAP</span>
+                    </div>
+                    <p class="text-gray-600 mb-4">A platform to the students who are interested in photography and film making.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-blue-600 font-bold text-lg">$5.00</span>
+                        <a href="#" class="inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 transform hover:-translate-y-1 shadow-md">
+                            <i class="fas fa-ticket-alt mr-2"></i> Get Tickets
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Event Card 2 -->
+            <div class="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
+                <div class="relative">
+                    <img src="https://i.postimg.cc/fySQfGvh/Math-Fest-3-0.jpg" alt="Event" class="w-full h-48 object-cover">
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent h-16"></div>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center text-sm text-gray-500 mb-3">
+                        <i class="far fa-calendar mr-2 text-blue-600"></i> Apr 15, 2025
+                        <span class="mx-2">•</span>
+                        <i class="far fa-clock mr-2 text-blue-600"></i> 9:00 AM
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">MathFest 3.0</h3>
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-map-marker-alt text-blue-600 mr-2"></i>
+                        <span class="text-gray-600">Void, CSE Department, UAP</span>
+                    </div>
+                    <p class="text-gray-600 mb-4">Members of this club will be guided and inspired for mathematics competition and programming contest.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-blue-600 font-bold text-lg">$2.00</span>
+                        <a href="#" class="inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 transform hover:-translate-y-1 shadow-md">
+                            <i class="fas fa-ticket-alt mr-2"></i> Get Tickets
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Event Card 3 -->
+            <div class="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
+                <div class="relative">
+                    <img src="https://i.postimg.cc/BbPfBrC9/Innovate-X-2025.jpg" alt="Event" class="w-full h-48 object-cover">
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent h-16"></div>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center text-sm text-gray-500 mb-3">
+                        <i class="far fa-calendar mr-2 text-blue-600"></i> Apr 16, 2025
+                        <span class="mx-2">•</span>
+                        <i class="far fa-clock mr-2 text-blue-600"></i> 10:00 AM
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">InnovateX 2025</h3>
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-map-marker-alt text-blue-600 mr-2"></i>
+                        <span class="text-gray-600">Void, CSE Department, UAP</span>
+                    </div>
+                    <p class="text-gray-600 mb-4">This club directly works for student's advancement in the hardware and software sectors.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-blue-600 font-bold text-lg">$5.00</span>
+                        <a href="#" class="inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 transform hover:-translate-y-1 shadow-md">
+                            <i class="fas fa-ticket-alt mr-2"></i> Get Tickets
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section class="py-16 bg-blue-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900">How Uapfy Works</h2>
+            <p class="mt-4 text-xl text-gray-600">Easy steps to discover and attend your favorite events</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+            <!-- Step 1 -->
+            <div class="text-center group">
+                <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-search text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">Find Events</h3>
+                <p class="text-gray-600">Browse through our extensive collection of events or use the search functionality to find exactly what you're looking for.</p>
+            </div>
+            
+            <!-- Step 2 -->
+            <div class="text-center group">
+                <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-ticket-alt text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">Book Tickets</h3>
+                <p class="text-gray-600">Securely purchase tickets for your chosen events with our easy checkout process and various payment options.</p>
+            </div>
+            
+            <!-- Step 3 -->
+            <div class="text-center group">
+                <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-star text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">Enjoy the Experience</h3>
+                <p class="text-gray-600">Attend your event with convenient digital tickets and share your memorable experiences afterward.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials -->
+<section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900">What Our Users Say</h2>
+            <p class="mt-4 text-xl text-gray-600">Read testimonials from satisfied customers</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Testimonial 1 -->
+            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 shadow-lg relative border border-blue-100">
+                <div class="absolute top-6 right-8 text-blue-200">
+                    <i class="fas fa-quote-right text-5xl"></i>
+                </div>
+                <div class="text-gray-700 mb-6 relative z-10">
+                    <p>"Uapfy made it incredibly easy to find and book tickets for a conference last minute. The interface is intuitive and the process was seamless."</p>
+                </div>
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 mr-4">
+                        <div class="w-12 h-12 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-md">
+                            MJ
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-bold text-gray-900">Sajjad</h4>
+                        <div class="text-yellow-400">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Testimonial 2 -->
+            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 shadow-lg relative border border-blue-100">
+                <div class="absolute top-6 right-8 text-blue-200">
+                    <i class="fas fa-quote-right text-5xl"></i>
+                </div>
+                <div class="text-gray-700 mb-6 relative z-10">
+                    <p>"As an event organizer, Uapfy has revolutionized the way I manage ticket sales. Their platform is powerful yet simple to use."</p>
+                </div>
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 mr-4">
+                        <div class="w-12 h-12 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-md">
+                            SP
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-bold text-gray-900">Anisa</h4>
+                        <div class="text-yellow-400">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Testimonial 3 -->
+            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 shadow-lg relative border border-blue-100">
+                <div class="absolute top-6 right-8 text-blue-200">
+                    <i class="fas fa-quote-right text-5xl"></i>
+                </div>
+                <div class="text-gray-700 mb-6 relative z-10">
+                    <p>"I've discovered so many amazing local events through Uapfy that I wouldn't have found otherwise. It's become my go-to platform!"</p>
+                </div>
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 mr-4">
+                        <div class="w-12 h-12 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-md">
+                            RL
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-bold text-gray-900">Mithon</h4>
+                        <div class="text-yellow-400">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-16 bg-gradient-to-r from-blue-600 to-indigo-700 text-white relative overflow-hidden">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 opacity-10">
+        <div class="absolute top-0 left-0 w-72 h-72 bg-white rounded-full mix-blend-overlay filter blur-xl opacity-30 animate-pulse"></div>
+        <div class="absolute bottom-0 right-0 w-72 h-72 bg-white rounded-full mix-blend-overlay filter blur-xl opacity-30 animate-pulse animation-delay-2000"></div>
+    </div>
+    
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+        <h2 class="text-3xl font-bold mb-6">Ready to Experience Amazing Events?</h2>
+        <p class="text-xl text-blue-100 mb-8 max-w-3xl mx-auto">Join thousands of users who discover and book incredible events every day. Your next unforgettable experience is waiting!</p>
+        <div class="flex justify-center space-x-4 flex-wrap">
+            <a href="#" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-blue-700 bg-white hover:bg-blue-50 transition duration-300 transform hover:-translate-y-1 shadow-lg mb-4 md:mb-0">
+                <i class="fas fa-search mr-2"></i> Explore Events
+            </a>
+            <a href="#" class="inline-flex items-center justify-center px-6 py-3 border border-white text-base font-medium rounded-lg text-white hover:bg-blue-700 transition duration-300 transform hover:-translate-y-1">
+                <i class="fas fa-calendar-plus mr-2"></i> Create Event
+            </a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
