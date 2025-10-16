@@ -49,3 +49,12 @@ def login(request):
             return redirect('login')
 
     return render(request, 'auth/login.html')
+
+
+
+# User Logout
+@login_required(login_url='login')
+def logout(request):
+    auth_logout(request)
+    messages.success(request, 'Logged out successfully')
+    return redirect('login')
