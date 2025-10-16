@@ -11,3 +11,22 @@ from django.utils import timezone
 def home(request):
     # events = Event.objects.filter(is_active=True).order_by('-start_time')[:5] 
     return render(request, 'home.html')
+
+
+# User Registration
+def register(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password']
+        
+        if User.objects.filter(username=username).exists():
+            messages.error(request, 'Username already exists')
+            return redirect('register')
+
+        user = User.objects.create_user(username=username, password=password, email=email)
+        UserProfile.objects.create(user=user)  
+        messages.success(request, 'Account created successfully')
+        return redirect('login')
+
+    return render(request, 'auth/register.html')
