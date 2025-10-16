@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login as Organizer | Uapfy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center py-8 px-4 sm:px-6 lg:px-8 relative">
+    <!-- Background Gradient -->
+    <div class="fixed inset-0 bg-gradient-to-br from-blue-50 via-white to-indigo-50 -z-10"></div>
+    
+    <!-- Animated Background Elements -->
+    <div class="fixed top-10 right-10 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
+    <div class="fixed bottom-10 left-10 w-72 h-72 bg-indigo-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse animation-delay-2000"></div>
+
+    <!-- Login Container -->
+    <div class="z-10 max-w-md w-full space-y-8">
+        <!-- Main Login Card -->
+        <div class="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
+            <!-- Header -->
+            <div class="text-center">
+                <div class="flex justify-center mb-6">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-user-tie text-white text-2xl"></i>
+                    </div>
+                </div>
+                <h2 class="text-3xl font-bold bg-gradient-to-r from-blue-800 to-indigo-700 bg-clip-text text-transparent mb-2">
+                    Organizer Login
+                </h2>
+                <p class="text-gray-600 text-lg">
+                    Access your organizer dashboard
+                </p>
+                <p class="mt-2 text-sm text-gray-500">
+                    Don't have an organizer account?
+                    <a href="{% url 'register_organizer' %}" class="font-semibold text-blue-600 hover:text-blue-500 transition-colors duration-300">
+                        Register here
+                    </a>
+                </p>
+            </div>
+
+            <!-- Messages -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="mt-6 {% if message.tags == 'error' %}bg-red-50 border border-red-200 text-red-700{% else %}bg-green-50 border border-green-200 text-green-700{% endif %} px-4 py-3 rounded-xl flex items-center" role="alert">
+                        <i class="{% if message.tags == 'error' %}fas fa-exclamation-circle{% else %}fas fa-check-circle{% endif %} mr-2"></i>
+                        <span class="text-sm">{{ message }}</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- Login Form -->
+            <form method="POST" action="{% url 'login_organizer' %}" class="mt-8 space-y-6">
+                {% csrf_token %}
+
+                <!-- Username Field -->
+                <div class="group">
+                    <label for="username" class="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
+                        <i class="fas fa-user text-blue-500 mr-2"></i>
+                        Username
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="fas fa-at text-gray-400 group-focus-within:text-blue-500 transition-colors duration-300"></i>
+                        </div>
+                        <input type="text" id="username" name="username" required placeholder="Enter your username"
+                            class="block w-full pl-12 pr-4 py-4 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300 group-hover:border-blue-300 text-base">
+                    </div>
+                </div>
+
+                <!-- Password Field -->
+                <div class="group">
+                    <label for="password" class="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
+                        <i class="fas fa-lock text-blue-500 mr-2"></i>
+                        Password
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="fas fa-key text-gray-400 group-focus-within:text-blue-500 transition-colors duration-300"></i>
+                        </div>
+                        <input type="password" id="password" name="password" required placeholder="Enter your password"
+                            class="block w-full pl-12 pr-12 py-4 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300 group-hover:border-blue-300 text-base">
+                        <button type="button" onclick="togglePassword(this)" class="absolute inset-y-0 right-0 pr-4 flex items-center text-sm text-gray-500 hover:text-blue-600 transition-colors duration-300">
+                            <i class="fas fa-eye mr-1"></i>
+                            <span>Show</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Remember Me & Forgot Password -->
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <input id="remember-me" name="remember-me" type="checkbox"
+                            class="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded transition duration-300">
+                        <label for="remember-me" class="ml-3 block text-sm text-gray-700 font-medium">
+                            Remember me
+                        </label>
+                    </div>
+                    <div class="text-sm">
+                        <a href="#" class="font-semibold text-blue-600 hover:text-blue-500 transition-colors duration-300 flex items-center">
+                            <i class="fas fa-question-circle mr-1"></i>
+                            Forgot password?
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div>
+                    <button type="submit"
+                        class="w-full flex justify-center items-center py-4 px-4 border border-transparent rounded-xl shadow-lg text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300 transform hover:-translate-y-1 text-base font-semibold group">
+                        <i class="fas fa-sign-in-alt mr-3 transition-transform duration-300 group-hover:scale-110"></i>
+                        Access Dashboard
+                    </button>
+                </div>
+            </form>
+            
+            <!-- Back to Home -->
+            <div class="text-center mt-8 pt-6 border-t border-gray-200">
+                <a href="{% url 'home' %}" class="text-blue-600 hover:text-blue-500 font-semibold transition-colors duration-300 flex items-center justify-center">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Back to Home
+                </a>
+            </div>
+        </div>
+
+        <!-- Security Note -->
+        <div class="text-center">
+            <p class="text-xs text-gray-500 flex items-center justify-center">
+                <i class="fas fa-shield-alt mr-1 text-green-500"></i>
+                Secure organizer portal with enterprise protection
+            </p>
+        </div>
+    </div>
+
+    <style>
+        .animation-delay-2000 {
+            animation-delay: 2s;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+        
+        .animate-pulse {
+            animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        /* Ensure scrolling works */
+        html, body {
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+    </style>
+
+    <script>
+        function togglePassword(el) {
+            const input = document.getElementById('password');
+            const icon = el.querySelector('i');
+            const text = el.querySelector('span');
+            
+            if (input.type === "password") {
+                input.type = "text";
+                icon.className = "fas fa-eye-slash mr-1";
+                text.textContent = "Hide";
+            } else {
+                input.type = "password";
+                icon.className = "fas fa-eye mr-1";
+                text.textContent = "Show";
+            }
+        }
+
+        // Add focus effects to form groups
+        document.addEventListener('DOMContentLoaded', function() {
+            const formGroups = document.querySelectorAll('.group');
+            formGroups.forEach(group => {
+                const input = group.querySelector('input');
+                if (input) {
+                    input.addEventListener('focus', function() {
+                        group.classList.add('focus-within');
+                    });
+                    input.addEventListener('blur', function() {
+                        group.classList.remove('focus-within');
+                    });
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
