@@ -1,13 +1,10 @@
+from django.contrib.auth import login as auth_login, logout as auth_logout, authenticate
+from django.contrib.auth.models import User
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse
-from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.views.decorators.csrf import csrf_exempt
-import json
-import datetime
-from .models import CustomUser, Event, Ticket
-from .forms import UserRegistrationForm, LoginForm, EventForm
+from .models import *
+from django.contrib.auth.decorators import login_required
+from django.utils import timezone
 
 # Home View
 def home(request):
