@@ -6,10 +6,10 @@ from .models import *
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 
-# Home View
+# Create your views here.
 def home(request):
-    events = Event.objects.filter(is_active=True)[:6]
-    return render(request, 'home.html', {'events': events})
+    # events = Event.objects.filter(is_active=True).order_by('-start_time')[:5] 
+    return render(request, 'home.html')
 
 # Authentication Views
 def register(request):
