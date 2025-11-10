@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>{% block title %}Uapfy{% endblock %}</title>
+    <style>
+        body {
+            font-family: "Poppins", sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+<nav class="bg-white shadow-md">
+    <!-- Floating Horizontal Navigation (Bottom-Centered) -->
+    <div class="nav-container fixed bottom-6 left-1/2 -translate-x-1/2 transform z-50
+        flex flex-row gap-5 px-6 py-3 rounded-full shadow-lg
+        backdrop-blur-lg"
+        style="background:var(--glass-bg);box-shadow:var(--shadow);">
+
+        <!-- Home -->
+        <div class="nav-item w-11 h-11 flex items-center justify-center rounded-full text-gray-700 hover:text-blue-600 cursor-pointer transition"
+            data-target="home" title="Home">
+            <i class="fas fa-home"></i>
+        </div>
+
+        <!-- Events -->
+        <div class="nav-item w-11 h-11 flex items-center justify-center rounded-full text-gray-700 hover:text-blue-600 cursor-pointer transition"
+            data-target="event_view" title="Events">
+            <i class="fas fa-calendar-alt"></i>
+        </div>
+
+        <!-- My Tickets -->
+        <div class="nav-item w-11 h-11 flex items-center justify-center rounded-full text-gray-700 hover:text-blue-600 cursor-pointer transition"
+            data-target="my_tickets" title="My Tickets">
+            <i class="fas fa-ticket-alt"></i>
+        </div>
+
+        <!-- Support -->
+        <div class="nav-item w-11 h-11 flex items-center justify-center rounded-full text-gray-700 hover:text-blue-600 cursor-pointer transition"
+            data-target="ContactUs" title="Support">
+            <i class="fas fa-headset"></i>
+        </div>
+
+        <!-- Profile / Auth -->
+        {% if user.is_authenticated %}
+        <a href="{% url 'user_profile' %}"
+            class="nav-item w-11 h-11 flex items-center justify-center rounded-full text-gray-700 hover:text-blue-600 transition"
+            title="Profile">
+            <i class="fas fa-user-circle"></i>
+        </a>
+        <a href="{% url 'logout' %}"
+            class="nav-item w-11 h-11 flex items-center justify-center rounded-full bg-red-500 text-white hover:bg-red-600 transition"
+            title="Logout">
+            <i class="fas fa-sign-out-alt"></i>
+        </a>
+        {% else %}
+        <a href="{% url 'login' %}"
+            class="nav-item w-11 h-11 flex items-center justify-center rounded-full bg-blue-600 text-white hover:bg-blue-700 transition"
+            title="Login">
+            <i class="fas fa-sign-in-alt"></i>
+        </a>
+        <a href="{% url 'register' %}"
+            class="nav-item w-11 h-11 flex items-center justify-center rounded-full bg-white border border-gray-200 text-gray-700 hover:text-blue-600 transition"
+            title="Register">
+            <i class="fas fa-user-plus"></i>
+        </a>
+        {% endif %}
+    </div>
+
+    <!-- JS for Navigation Behaviour -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const navItems = document.querySelectorAll(".nav-container .nav-item");
+
+            navItems.forEach(item => {
+                if (!item.querySelector("a")) {
+                    item.addEventListener("click", () => {
+                        const target = item.getAttribute("data-target");
+
+                        // Update active state
+                        navItems.forEach(i => i.classList.remove("active"));
+                        item.classList.add("active");
+
+                        // Navigate to Django route if exists
+                        const urls = {
+                            home: "{% url 'home' %}",
+                            event_view: "{% url 'event_view' %}",
+                            my_tickets: "{% url 'my_tickets' %}",
+                            ContactUs: "{% url 'ContactUs' %}",
+                        };
+
+                        if (urls[target]) {
+                            window.location.href = urls[target];
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
+    <!-- Optional CSS Enhancement -->
+    <style>
+        .nav-container {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .nav-container:hover {
+            transform: translateX(-50%) translateY(-5px);
+        }
+
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.6);
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Active nav item effect */
+        .nav-item.active {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: #2563eb;
+        }
+    </style>
+</nav>
+
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}
+        <!-- Your content goes here -->
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-br from-blue-800 to-blue-900 text-white">
+    <!-- Main Footer -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <!-- Brand Column -->
+            <div class="lg:col-span-1 space-y-6">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center mr-3">
+                        <img class="h-8 w-auto" src="https://i.postimg.cc/XJBzRjSK/uapfy-blue.png" alt="Uapfy Logo">
+                    </div>
+                    <span class="text-2xl font-bold bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">Uapfy</span>
+                </div>
+                <p class="text-blue-100 text-lg leading-relaxed">
+                    Discover amazing events, book tickets, and create unforgettable experiences with Uapfy.
+                </p>
+                <div class="flex space-x-4">
+                    <a href="#" class="w-10 h-10 bg-blue-700 rounded-lg flex items-center justify-center hover:bg-blue-600 transition-all duration-300 transform hover:-translate-y-1">
+                        <i class="fab fa-facebook-f text-white"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 bg-blue-700 rounded-lg flex items-center justify-center hover:bg-blue-600 transition-all duration-300 transform hover:-translate-y-1">
+                        <i class="fab fa-twitter text-white"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 bg-blue-700 rounded-lg flex items-center justify-center hover:bg-blue-600 transition-all duration-300 transform hover:-translate-y-1">
+                        <i class="fab fa-instagram text-white"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 bg-blue-700 rounded-lg flex items-center justify-center hover:bg-blue-600 transition-all duration-300 transform hover:-translate-y-1">
+                        <i class="fab fa-linkedin-in text-white"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="space-y-6">
+                <h3 class="text-xl font-bold flex items-center">
+                    <i class="fas fa-link mr-3 text-blue-300"></i>
+                    Quick Links
+                </h3>
+                <ul class="space-y-3">
+                    <li>
+                        <a href="#" class="text-blue-100 hover:text-white transition-all duration-300 flex items-center group">
+                            <i class="fas fa-chevron-right text-xs mr-2 text-blue-300 group-hover:translate-x-1 transition-transform"></i>
+                            About Us
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="text-blue-100 hover:text-white transition-all duration-300 flex items-center group">
+                            <i class="fas fa-chevron-right text-xs mr-2 text-blue-300 group-hover:translate-x-1 transition-transform"></i>
+                            Browse Events
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="text-blue-100 hover:text-white transition-all duration-300 flex items-center group">
+                            <i class="fas fa-chevron-right text-xs mr-2 text-blue-300 group-hover:translate-x-1 transition-transform"></i>
+                            Create Event
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="text-blue-100 hover:text-white transition-all duration-300 flex items-center group">
+                            <i class="fas fa-chevron-right text-xs mr-2 text-blue-300 group-hover:translate-x-1 transition-transform"></i>
+                            FAQ
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="text-blue-100 hover:text-white transition-all duration-300 flex items-center group">
+                            <i class="fas fa-chevron-right text-xs mr-2 text-blue-300 group-hover:translate-x-1 transition-transform"></i>
+                            Blog
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Support -->
+            <div class="space-y-6">
+                <h3 class="text-xl font-bold flex items-center">
+                    <i class="fas fa-headset mr-3 text-blue-300"></i>
+                    Support
+                </h3>
+                <ul class="space-y-3">
+                    <li>
+                        <a href="#" class="text-blue-100 hover:text-white transition-all duration-300 flex items-center group">
+                            <i class="fas fa-chevron-right text-xs mr-2 text-blue-300 group-hover:translate-x-1 transition-transform"></i>
+                            Help Center
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="text-blue-100 hover:text-white transition-all duration-300 flex items-center group">
+                            <i class="fas fa-chevron-right text-xs mr-2 text-blue-300 group-hover:translate-x-1 transition-transform"></i>
+                            Contact Us
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="text-blue-100 hover:text-white transition-all duration-300 flex items-center group">
+                            <i class="fas fa-chevron-right text-xs mr-2 text-blue-300 group-hover:translate-x-1 transition-transform"></i>
+                            Privacy Policy
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="text-blue-100 hover:text-white transition-all duration-300 flex items-center group">
+                            <i class="fas fa-chevron-right text-xs mr-2 text-blue-300 group-hover:translate-x-1 transition-transform"></i>
+                            Terms of Service
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="text-blue-100 hover:text-white transition-all duration-300 flex items-center group">
+                            <i class="fas fa-chevron-right text-xs mr-2 text-blue-300 group-hover:translate-x-1 transition-transform"></i>
+                            Refund Policy
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="space-y-6">
+                <h3 class="text-xl font-bold flex items-center">
+                    <i class="fas fa-envelope mr-3 text-blue-300"></i>
+                    Contact
+                </h3>
+                <ul class="space-y-4">
+                    <li class="flex items-start group">
+                        <div class="w-10 h-10 bg-blue-700 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-600 transition-colors duration-300">
+                            <i class="fas fa-map-marker-alt text-blue-300"></i>
+                        </div>
+                        <div>
+                            <p class="text-blue-100 font-medium">Our Location</p>
+                            <p class="text-blue-200 text-sm">74/A, Green Road, Dhaka-1205</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start group">
+                        <div class="w-10 h-10 bg-blue-700 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-600 transition-colors duration-300">
+                            <i class="fas fa-phone-alt text-blue-300"></i>
+                        </div>
+                        <div>
+                            <p class="text-blue-100 font-medium">Phone</p>
+                            <p class="text-blue-200 text-sm">+880 1748-468498</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start group">
+                        <div class="w-10 h-10 bg-blue-700 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-600 transition-colors duration-300">
+                            <i class="fas fa-envelope text-blue-300"></i>
+                        </div>
+                        <div>
+                            <p class="text-blue-100 font-medium">Email</p>
+                            <p class="text-blue-200 text-sm">support@uapfy.com</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Newsletter Section -->
+    <div class="border-t border-blue-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex flex-col lg:flex-row items-center justify-between gap-6">
+                <div class="text-center lg:text-left">
+                    <h3 class="text-xl font-bold mb-2 flex items-center justify-center lg:justify-start">
+                        <i class="fas fa-paper-plane mr-3 text-blue-300"></i>
+                        Stay Updated
+                    </h3>
+                    <p class="text-blue-100">Get the latest event updates and exclusive offers</p>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+                    <input 
+                        type="email" 
+                        placeholder="Enter your email"
+                        class="px-4 py-3 rounded-lg bg-blue-700 border border-blue-600 text-white placeholder-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition duration-300"
+                    >
+                    <button class="bg-white text-blue-700 font-semibold px-6 py-3 rounded-lg hover:bg-blue-50 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl">
+                        Subscribe
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Footer -->
+    <div class="bg-blue-950 py-6 border-t border-blue-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex items-center space-x-6">
+                    <p class="text-sm text-blue-200">© 2025 Uapfy. All rights reserved.</p>
+                    <div class="hidden md:flex items-center space-x-4 text-blue-300">
+                        <i class="fas fa-shield-alt text-sm"></i>
+                        <span class="text-sm">Secure & Reliable</span>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-6">
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-sm text-blue-200 hover:text-white transition-all duration-300 flex items-center group">
+                            Privacy
+                            <i class="fas fa-chevron-right text-xs ml-1 group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                        <a href="#" class="text-sm text-blue-200 hover:text-white transition-all duration-300 flex items-center group">
+                            Terms
+                            <i class="fas fa-chevron-right text-xs ml-1 group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                        <a href="#" class="text-sm text-blue-200 hover:text-white transition-all duration-300 flex items-center group">
+                            Cookies
+                            <i class="fas fa-chevron-right text-xs ml-1 group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    </script>
+</body>
+
+</html>
