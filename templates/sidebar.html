@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+    <title>{% block title %}Organizer | Dashboard{% endblock %}</title>
+</head>
+<body>
+    <div class="min-h-screen bg-gray-50 flex">
+        <!-- Sidebar -->
+        <div class="fixed w-64 h-screen bg-gradient-to-b from-blue-800 to-blue-900 text-white shadow-lg z-10">
+            <!-- Logo and Header -->
+            <div class="px-6 pt-8 pb-6 flex flex-col items-center border-b border-blue-700">
+                <img src="https://i.postimg.cc/XJBzRjSK/uapfy-blue.png" alt="Uapfy" class="h-10 mb-4">
+                <div class="flex items-center space-x-2">
+                    {% if organizer.logo %}
+                    <img src="{{ organizer.logo.url }}" alt="{{ organizer.organization_name }}" class="w-10 h-10 rounded-full border-2 border-blue-400">
+                    {% else %}
+                    <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
+                        <i class="fas fa-building text-white"></i>
+                    </div>
+                    {% endif %}
+                    <div>
+                        <h2 class="font-bold text-sm">{{ organizer.organization_name }}</h2>
+                        <p class="text-xs text-blue-300">Organizer</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Navigation Menu -->
+            <nav class="px-4 py-6">
+                <ul class="space-y-2">
+                    <li>
+                        <a href="{% url 'dashboard' %}" class="flex items-center space-x-3 px-4 py-3 rounded-lg bg-blue-700 text-white hover:bg-blue-600 transition-all">
+                            <i class="fas fa-tachometer-alt w-5 text-center"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'event_list' %}" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-blue-100 hover:bg-blue-700 transition-all">
+                            <i class="fas fa-calendar-alt w-5 text-center"></i>
+                            <span>My Events</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'create_event' %}" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-blue-100 hover:bg-blue-700 transition-all">
+                            <i class="fas fa-plus-circle w-5 text-center"></i>
+                            <span>Create Event</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'organizer_tickets' %}" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-blue-100 hover:bg-blue-700 transition-all">
+                            <i class="fas fa-ticket-alt w-5 text-center"></i>
+                            <span>Tickets</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'organizer_analytics' %}" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-blue-100 hover:bg-blue-700 transition-all">
+                            <i class="fas fa-chart-bar w-5 text-center"></i>
+                            <span>Analytics</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'organizer_profile' %}" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-blue-100 hover:bg-blue-700 transition-all">
+                            <i class="fas fa-comment-alt w-5 text-center"></i>
+                            <span>Profile</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Bottom Section -->
+            <div class="absolute bottom-0 w-full p-4 border-t border-blue-700">
+                <a href="{% url 'logout_organizer' %}" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-blue-100 hover:bg-red-600 transition-all">
+                    <i class="fas fa-sign-out-alt w-5 text-center"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="ml-64 w-full">
+            {% block content %}
+            <!-- Main content will be injected here -->
+            {% endblock %}
+        </div>
+    
+</body>
+</html>
