@@ -1,0 +1,318 @@
+{% extends 'base.html' %}
+{% block title %}{{ event.title }} | Event Details{% endblock %}
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
+    <!-- Hero Banner Section -->
+    <div class="relative w-full h-96 md:h-[500px] overflow-hidden">
+        {% if event.banner %}
+        <img src="{{ event.banner.url }}" alt="{{ event.title }}" 
+             class="w-full h-full object-cover transform transition-transform duration-10000 hover:scale-105">
+        {% else %}
+        <div class="w-full h-full bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center">
+            <div class="text-center text-white">
+                <i class="fas fa-calendar-alt text-9xl opacity-20 mb-4"></i>
+                <h1 class="text-4xl font-bold opacity-80">{{ event.title }}</h1>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Gradient Overlay -->
+        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+        
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-20 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+            <!-- Left Column - Event Details -->
+            <div class="lg:col-span-2">
+                <!-- Event Header Card -->
+                <div class="bg-white rounded-2xl shadow-xl p-8 mb-8 border border-gray-100">
+                    <div class="flex flex-wrap items-center gap-3 mb-6">
+                        {% if event.featured %}
+                        <span class="bg-gradient-to-r from-yellow-400 to-yellow-500 text-white text-sm font-bold px-4 py-2 rounded-full flex items-center">
+                            <i class="fas fa-star mr-2"></i> FEATURED
+                        </span>
+                        {% endif %}
+                        
+                        <span class="{% if event.status == 'upcoming' %}bg-green-500
+                                   {% elif event.status == 'ongoing' %}bg-yellow-500
+                                   {% else %}bg-gray-500{% endif %} text-white text-sm font-bold px-4 py-2 rounded-full">
+                            {{ event.status|upper }}
+                        </span>
+                        
+                        {% for category in event.categories.all %}
+                        <span class="bg-blue-100 text-blue-700 text-sm font-medium px-4 py-2 rounded-full border border-blue-200">
+                            {{ category }}
+                        </span>
+                        {% endfor %}
+                    </div>
+
+                    <h1 class="text-4xl lg:text-5xl font-bold text-gray-800 mb-4 leading-tight">
+                        {{ event.title }}
+                    </h1>
+                    
+                    <div class="flex items-center text-gray-600 mb-6">
+                        <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center mr-3">
+                            <i class="fas fa-user-circle text-blue-600"></i>
+                        </div>
+                        <div>
+                            <p class="font-medium">Organized by</p>
+                            <p class="text-lg font-semibold text-gray-800">{{ event.organizer }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 p-6 bg-blue-50 rounded-2xl border border-blue-100">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-blue-700 mb-1">
+                                {% if event.max_attendees > 0 %}{{ event.max_attendees }}{% else %}∞{% endif %}
+                            </div>
+                            <div class="text-sm text-blue-600 font-medium">Capacity</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-green-700 mb-1">
+                                {{ event.tickets_sold|default:0 }}
+                            </div>
+                            <div class="text-sm text-green-600 font-medium">Tickets Sold</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-purple-700 mb-1">
+                                {% if event.ticket_price > 0 %}BDT {{ event.ticket_price }}{% else %}FREE{% endif %}
+                            </div>
+                            <div class="text-sm text-purple-600 font-medium">Price</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-orange-700 mb-1">
+                                {{ event.duration_hours|default:"N/A" }}
+                            </div>
+                            <div class="text-sm text-orange-600 font-medium">Duration</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Event Description Card -->
+                <div class="bg-white rounded-2xl shadow-xl p-8 mb-8 border border-gray-100">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center">
+                        <i class="fas fa-align-left text-blue-600 mr-3"></i>
+                        About This Event
+                    </h2>
+                    <div class="prose prose-lg max-w-none text-gray-700 leading-relaxed">
+                        {{ event.description|linebreaks }}
+                    </div>
+                    
+                    <!-- Event Highlights -->
+                    {% if event.highlights %}
+                    <div class="mt-8 p-6 bg-yellow-50 rounded-2xl border border-yellow-200">
+                        <h3 class="text-xl font-bold text-yellow-800 mb-4 flex items-center">
+                            <i class="fas fa-bolt text-yellow-600 mr-2"></i>
+                            Event Highlights
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            {% for highlight in event.highlights %}
+                            <div class="flex items-center text-yellow-700">
+                                <i class="fas fa-check-circle mr-3 text-yellow-500"></i>
+                                <span>{{ highlight }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Share Section -->
+                <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Share This Event</h3>
+                    <p class="text-gray-600 mb-6">Help spread the word about this amazing event!</p>
+                    <div class="flex flex-wrap gap-3">
+                        <a href="#" class="flex items-center px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition duration-300 transform hover:-translate-y-1 group">
+                            <i class="fab fa-facebook-f mr-2 group-hover:scale-110 transition-transform"></i>
+                            Facebook
+                        </a>
+                        <a href="#" class="flex items-center px-6 py-3 bg-blue-400 text-white rounded-xl hover:bg-blue-500 transition duration-300 transform hover:-translate-y-1 group">
+                            <i class="fab fa-twitter mr-2 group-hover:scale-110 transition-transform"></i>
+                            Twitter
+                        </a>
+                        <a href="#" class="flex items-center px-6 py-3 bg-red-500 text-white rounded-xl hover:bg-red-600 transition duration-300 transform hover:-translate-y-1 group">
+                            <i class="fab fa-instagram mr-2 group-hover:scale-110 transition-transform"></i>
+                            Instagram
+                        </a>
+                        <a href="#" class="flex items-center px-6 py-3 bg-green-500 text-white rounded-xl hover:bg-green-600 transition duration-300 transform hover:-translate-y-1 group">
+                            <i class="fab fa-whatsapp mr-2 group-hover:scale-110 transition-transform"></i>
+                            WhatsApp
+                        </a>
+                        <a href="#" class="flex items-center px-6 py-3 bg-blue-800 text-white rounded-xl hover:bg-blue-900 transition duration-300 transform hover:-translate-y-1 group">
+                            <i class="fab fa-linkedin-in mr-2 group-hover:scale-110 transition-transform"></i>
+                            LinkedIn
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Sidebar -->
+            <div class="space-y-6">
+                <!-- Event Details Card -->
+                <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100 sticky top-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
+                        <i class="fas fa-info-circle text-blue-600 mr-2"></i>
+                        Event Details
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <!-- Date & Time -->
+                        <div class="flex items-start p-4 bg-blue-50 rounded-xl border border-blue-100">
+                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                                <i class="far fa-calendar-alt text-blue-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800 mb-1">Date & Time</h4>
+                                <p class="text-gray-600 text-sm">{{ event.start_time|date:"D, M d, Y" }}</p>
+                                <p class="text-gray-600 text-sm">{{ event.start_time|date:"g:i A" }} - {{ event.end_time|date:"g:i A" }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Location -->
+                        <div class="flex items-start p-4 bg-green-50 rounded-xl border border-green-100">
+                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-map-marker-alt text-green-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800 mb-1">Location</h4>
+                                <p class="text-gray-600 text-sm">{{ event.location }}</p>
+                                {% if event.venue_address %}
+                                <p class="text-gray-500 text-xs mt-1">{{ event.venue_address }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Ticket Price -->
+                        <div class="flex items-start p-4 bg-purple-50 rounded-xl border border-purple-100">
+                            <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-tag text-purple-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800 mb-1">Ticket Price</h4>
+                                <p class="text-gray-600 text-sm">
+                                    {% if event.ticket_price > 0 %}
+                                    BDT {{ event.ticket_price }}
+                                    {% else %}
+                                    <span class="text-green-600 font-bold">FREE</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Organizer Contact -->
+                        <div class="flex items-start p-4 bg-orange-50 rounded-xl border border-orange-100">
+                            <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-user-tie text-orange-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800 mb-1">Organizer</h4>
+                                <p class="text-gray-600 text-sm">{{ event.organizer }}</p>
+                                <p class="text-blue-600 text-xs mt-1 hover:text-blue-700 cursor-pointer">
+                                    <i class="fas fa-envelope mr-1"></i> Contact Organizer
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CTA Button -->
+                    <div class="mt-6">
+                        <a href="{% url 'buy_ticket' event.id %}"
+                           class="w-full bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 flex items-center justify-center group">
+                            <i class="fas fa-ticket-alt mr-3 group-hover:scale-110 transition-transform"></i>
+                            Get Your Ticket
+                        </a>
+                        
+                        <div class="mt-4 text-center">
+                            <a href="{% url 'event_view' %}"
+                               class="text-blue-600 hover:text-blue-800 font-medium flex items-center justify-center group">
+                                <i class="fas fa-arrow-left mr-2 group-hover:-translate-x-1 transition-transform"></i>
+                                Back to All Events
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Map Card -->
+                {% if event.venue_address %}
+                <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-map text-green-600 mr-2"></i>
+                        Event Location
+                    </h3>
+                    <div class="bg-gray-100 rounded-xl h-48 flex items-center justify-center text-gray-400">
+                        <div class="text-center">
+                            <i class="fas fa-map-marker-alt text-3xl mb-2"></i>
+                            <p class="text-sm">Interactive Map</p>
+                            <p class="text-xs text-gray-500 mt-1">Location: {{ event.location }}</p>
+                        </div>
+                    </div>
+                    <button class="w-full mt-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 rounded-xl transition duration-300 flex items-center justify-center group">
+                        <i class="fas fa-directions mr-2 group-hover:scale-110 transition-transform"></i>
+                        Get Directions
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .prose {
+        max-width: none;
+    }
+    
+    .prose p {
+        margin-bottom: 1.5em;
+        line-height: 1.7;
+    }
+    
+    .prose strong {
+        color: #1f2937;
+        font-weight: 600;
+    }
+    
+    .sticky {
+        position: sticky;
+    }
+    
+    /* Smooth scrolling */
+    html {
+        scroll-behavior: smooth;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add smooth scrolling to all links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Add animation to ticket button on scroll into view
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-pulse');
+                    setTimeout(() => {
+                        entry.target.classList.remove('animate-pulse');
+                    }, 2000);
+                }
+            });
+        });
+
+        const ticketButton = document.querySelector('a[href*="buy_ticket"]');
+        if (ticketButton) {
+            observer.observe(ticketButton);
+        }
+    });
+</script>
+{% endblock %}
