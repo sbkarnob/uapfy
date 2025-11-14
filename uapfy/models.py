@@ -76,3 +76,62 @@ class Event(models.Model):
             elif now > self.end_time:
                 self.status = 'completed'
             self.save()
+
+
+# Order Model
+class Order(models.Model):
+    ORDER_STATUS_CHOICES = (
+        ('pending', 'Pending'),
+        ('processing', 'Processing'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled'),
+        ('refunded', 'Refunded'),
+    )
+    
+    PAYMENT_METHOD_CHOICES = (
+        ('credit_card', 'Credit Card'),
+        ('paypal', 'PayPal'),
+        ('bank_transfer', 'Bank Transfer'),
+        ('other', 'Other'),
+    )
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    order_number = models.CharField(max_length=100, unique=True, editable=False)
+    status = models.CharField(max_length=20, choices=ORDER_STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    subtotal = models.DecimalField(max_digits=10, decimal_places=2)
+    total = models.DecimalField(max_digits=10, decimal_places=2)
+    payment_method = models.CharField(max_length=20, choices=PAYMENT_METHOD_CHOICES, default='credit_card')
+    billing_name = models.CharField(max_length=255)
+    billing_email = models.EmailField()
+    billing_phone = models.CharField(max_length=20)
+    billing_address = models.TextField()
+    
+    def __str__(self):
+        return self.order_number
+        
+    def save(self, *args, **kwargs):
+        if not self.order_number:
+            self.order_number = f"ORD-{uuid.uuid4().hex[:8].upper()}"
+        super().save(*args, **kwargs)
+
+    def calculate_total(self):
+        total = Decimal(0)
+        for item in self.items.all():
+            total += item.get_total()
+        self.total = total
+        self.save()
+
+# Order Item Model
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    unit_price = models.DecimalField(max_digits=10, decimal_places=2)
+    
+    def __str__(self):
+        return f"{self.quantity} - {self.unit_price}"
+        
+    def get_total(self):
+        return self.quantity * self.unit_price
