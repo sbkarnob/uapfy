@@ -135,3 +135,42 @@ class OrderItem(models.Model):
         
     def get_total(self):
         return self.quantity * self.unit_price
+
+# Ticket Model
+class Ticket(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, related_name='tickets', on_delete=models.CASCADE)
+    ticket_number = models.CharField(max_length=255, unique=True, editable=False, db_index=True)
+    purchased_at = models.DateTimeField(auto_now_add=True)
+    qr_code = models.ImageField(upload_to='qr_codes/', blank=True, null=True)
+    is_used = models.BooleanField(default=False)
+    checked_in_at = models.DateTimeField(null=True, blank=True)
+    attendee_name = models.CharField(max_length=255, blank=True, null=True)
+    attendee_email = models.EmailField(blank=True, null=True)
+    attendee_phone = models.CharField(max_length=20, blank=True, null=True)
+    
+    def __str__(self):
+        return f"{self.ticket_number} - {self.event.title}"
+    
+    def save(self, *args, **kwargs):
+        if not self.ticket_number:
+            self.ticket_number = f"TKT-{uuid.uuid4().hex[:12].upper()}"
+            
+        if not self.qr_code:
+            qr_data = f"Ticket ID: {self.ticket_number}\nEvent: {self.event.title}\n Attendee: {self.user.username}"
+            qr_img = qrcode.make(qr_data)
+            blob = BytesIO()
+            qr_img.save(blob, 'PNG')
+            self.qr_code.save(f'{self.ticket_number}_qr.png', File(blob), save=False)
+            
+        super().save(*args, **kwargs)
+        
+    def check_in(self):
+        if not self.is_used:
+            self.is_used = True
+            self.checked_in_at = timezone.now()
+            self.save()
+            return True
+        return False
+
