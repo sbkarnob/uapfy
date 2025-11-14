@@ -174,3 +174,18 @@ class Ticket(models.Model):
             return True
         return False
 
+
+# Reviews Model
+class Review(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='reviews')
+    rating = models.PositiveSmallIntegerField()  # 1-5 stars
+    comment = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        unique_together = ('user', 'event')
+        
+    def __str__(self):
+        return f"{self.user.username}'s review for {self.event.title}"
