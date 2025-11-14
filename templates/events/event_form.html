@@ -1,0 +1,269 @@
+{% extends 'sidebar.html' %}
+{% block title %}{% if event %}Edit Event{% else %}Create Event{% endif %}{% endblock %}
+{% block content %}
+
+<!-- Form Header -->
+<div class="bg-white shadow-sm p-4 flex justify-between items-center">
+    <div>
+        <h1 class="text-xl font-semibold text-gray-800">
+            {% if event %}Edit Event: {{ event.title }}{% else %}Create New Event{% endif %}
+        </h1>
+        <p class="text-sm text-gray-500">{% if event %}Update your event details{% else %}Fill in the details to create
+            a new event{% endif %}</p>
+    </div>
+
+    <a href="{% url 'event_list' %}"
+        class="border border-blue-600 text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-lg flex items-center space-x-2 transition duration-300">
+        <i class="fas fa-arrow-left"></i>
+        <span>Back to Events</span>
+    </a>
+</div>
+
+<!-- Messages -->
+{% if messages %}
+<div class="p-4">
+    {% for message in messages %}
+    <div class="{% if message.tags == 'success' %}bg-green-100 border-l-4 border-green-500 text-green-700{% elif message.tags == 'error' %}bg-red-100 border-l-4 border-red-500 text-red-700{% else %}bg-blue-100 border-l-4 border-blue-500 text-blue-700{% endif %} p-4 mb-4"
+        role="alert">
+        <p>{{ message }}</p>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- Event Form -->
+<div class="p-6">
+    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+        <form method="post" enctype="multipart/form-data"
+            action="{% if event %}{% url 'update_event' event.id %}{% else %}{% url 'create_event' %}{% endif %}"
+            class="p-6">
+            {% csrf_token %}
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Left Column -->
+                <div class="space-y-6">
+                    <!-- Event Title -->
+                    <div>
+                        <label for="title" class="block text-sm font-medium text-gray-700 mb-1">
+                            Event Title <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" name="title" id="title" required
+                            value="{% if event %}{{ event.title }}{% endif %}"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="Enter event title">
+                    </div>
+
+                    <!-- Event Location -->
+                    <div>
+                        <label for="location" class="block text-sm font-medium text-gray-700 mb-1">
+                            Location <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" name="location" id="location" required
+                            value="{% if event %}{{ event.location }}{% endif %}"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="City, Country">
+                    </div>
+
+                    <!-- Venue Address -->
+                    <div>
+                        <label for="venue_address" class="block text-sm font-medium text-gray-700 mb-1">
+                            Venue Address
+                        </label>
+                        <textarea name="venue_address" id="venue_address" rows="2"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="Enter detailed venue address">{% if event %}{{ event.venue_address }}{% endif %}</textarea>
+                    </div>
+
+                    <!-- Event Dates -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="start_time" class="block text-sm font-medium text-gray-700 mb-1">
+                                Start Date & Time <span class="text-red-500">*</span>
+                            </label>
+                            <input type="datetime-local" name="start_time" id="start_time" required
+                                value="{% if event %}{{ event.start_time|date:'Y-m-d' }}T{{ event.start_time|time:'H:i' }}{% endif %}"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label for="end_time" class="block text-sm font-medium text-gray-700 mb-1">
+                                End Date & Time <span class="text-red-500">*</span>
+                            </label>
+                            <input type="datetime-local" name="end_time" id="end_time" required
+                                value="{% if event %}{{ event.end_time|date:'Y-m-d' }}T{{ event.end_time|time:'H:i' }}{% endif %}"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+
+                    <!-- Event Categories -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            Categories
+                        </label>
+                        <div
+                            class="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto p-2 border border-gray-300 rounded-md">
+                            {% for category in categories %}
+                            <div class="flex items-center">
+                                <input type="checkbox" name="categories" id="cat-{{ category.id }}"
+                                    value="{{ category.id }}" {% if event %} {% if category in event.categories.all %}
+                                    checked {% endif %} {% endif %}
+                                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                <label for="cat-{{ category.id }}" class="ml-2 text-sm text-gray-700">
+                                    {{ category.name }}
+                                </label>
+                            </div>
+                            {% endfor %}
+
+                        </div>
+                    </div>
+
+                    <!-- Max Attendees -->
+                    <div>
+                        <label for="max_attendees" class="block text-sm font-medium text-gray-700 mb-1">
+                            Max Attendees (0 for unlimited)
+                        </label>
+                        <input type="number" name="max_attendees" id="max_attendees" min="0"
+                            value="{% if event %}{{ event.max_attendees }}{% else %}0{% endif %}"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="space-y-6">
+                    <!-- Event Status (only for editing) -->
+                    {% if event %}
+                    <div>
+                        <label for="status" class="block text-sm font-medium text-gray-700 mb-1">
+                            Event Status
+                        </label>
+                        <select name="status" id="status"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="upcoming" {% if event.status == 'upcoming' %}selected{% endif %}>Upcoming</option>
+                            <option value="ongoing" {% if event.status == 'ongoing' %}selected{% endif %}>Ongoing</option>
+                            <option value="completed" {% if event.status == 'completed' %}selected{% endif %}>Completed</option>
+                            <option value="cancelled" {% if event.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                        </select>
+                    </div>
+                    {% endif %}
+
+
+                    <!-- Event Banner -->
+                    <div>
+                        <label for="banner" class="block text-sm font-medium text-gray-700 mb-1">
+                            Event Banner
+                        </label>
+                        <div
+                            class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md relative">
+                            <div id="banner-preview-container"
+                                class="{% if event and event.banner %}hidden{% endif %} text-center">
+                                <i class="fas fa-cloud-upload-alt text-gray-400 text-3xl"></i>
+                                <div class="mt-2 text-sm text-gray-600">
+                                    <label for="banner"
+                                        class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500">
+                                        <span>Upload a file</span>
+                                        <input id="banner" name="banner" type="file" accept="image/*" class="sr-only"
+                                            onchange="previewImage(event)">
+                                    </label>
+                                    <p class="text-xs text-gray-500 mt-1">
+                                        PNG, JPG, GIF up to 2MB
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Image Preview -->
+                            <div id="image-preview"
+                                class="{% if not event or not event.banner %}hidden{% endif %} w-full">
+                                <img id="preview-img"
+                                    src="{% if event and event.banner %}{{ event.banner.url }}{% endif %}"
+                                    alt="Banner Preview" class="mx-auto max-h-40 object-cover rounded">
+                                <div class="mt-2 flex justify-center">
+                                    <button type="button" onclick="removeImage()"
+                                        class="text-xs text-red-500 hover:text-red-700">
+                                        <i class="fas fa-trash mr-1"></i> Remove image
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Event Description -->
+                    <div>
+                        <label for="description" class="block text-sm font-medium text-gray-700 mb-1">
+                            Event Description <span class="text-red-500">*</span>
+                        </label>
+                        <textarea name="description" id="description" rows="9" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="Describe your event...">{% if event %}{{ event.description }}{% endif %}</textarea>
+                    </div>
+
+                    <!-- Ticket Price -->
+                    <div>
+                        <label for="ticket_price" class="block text-sm font-medium text-gray-700 mb-1">
+                            Ticket Price (BDT) <span class="text-red-500">*</span>
+                        </label>
+                        <input type="number" name="ticket_price" id="ticket_price" step="0.01" min="0" required
+                            value="{% if event %}{{ event.ticket_price }}{% else %}0.00{% endif %}"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="Enter ticket price">
+                    </div>
+
+
+                </div>
+            </div>
+
+            <!-- Submit Buttons -->
+            <div class="mt-8 flex justify-end space-x-3">
+                <a href="{% url 'event_list' %}"
+                    class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none">
+                    Cancel
+                </a>
+                <button type="submit"
+                    class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none">
+                    {% if event %}Update Event{% else %}Create Event{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function previewImage(event) {
+        const input = event.target;
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                document.getElementById('preview-img').src = e.target.result;
+                document.getElementById('banner-preview-container').classList.add('hidden');
+                document.getElementById('image-preview').classList.remove('hidden');
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function removeImage() {
+        document.getElementById('banner').value = '';
+        document.getElementById('banner-preview-container').classList.remove('hidden');
+        document.getElementById('image-preview').classList.add('hidden');
+
+
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'remove_banner';
+        hiddenInput.value = 'true';
+        document.querySelector('form').appendChild(hiddenInput);
+    }
+
+
+    document.querySelector('form').addEventListener('submit', function (event) {
+        const startTime = new Date(document.getElementById('start_time').value);
+        const endTime = new Date(document.getElementById('end_time').value);
+
+        if (endTime <= startTime) {
+            event.preventDefault();
+            alert('End time must be after start time');
+        }
+    });
+</script>
+
+{% endblock %}
