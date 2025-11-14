@@ -29,3 +29,10 @@ class OrganizerProfile(models.Model):
 
     def __str__(self):
         return self.organization_name or self.user.username
+
+# Event Category
+class EventCategory(models.Model):
+    name = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.name
