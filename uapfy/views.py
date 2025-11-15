@@ -181,3 +181,48 @@ def delete_event(request, event_id):
     event.delete()
     messages.success(request, 'Event deleted successfully')
     return redirect('event_list')
+
+
+# Event View  
+def event_view(request):
+    events = Event.objects.filter(is_active=True).order_by('-start_time')
+    
+    # Search functionality - NEW
+    query = request.GET.get('q')
+    if query:
+        events = events.filter(
+            Q(title__icontains=query) |
+            Q(description__icontains=query) |
+            Q(location__icontains=query) |
+            Q(categories__name__icontains=query)
+        ).distinct()
+    
+    # Category filter - NEW
+    category = request.GET.get('category')
+    if category:
+        events = events.filter(categories__name__icontains=category)
+    
+    # Date filter - NEW
+    date = request.GET.get('date')
+    if date:
+        events = events.filter(start_time__date=date)
+    
+    # Sort functionality - NEW
+    sort = request.GET.get('sort')
+    if sort == 'date_asc':
+        events = events.order_by('start_time')
+    elif sort == 'date_desc':
+        events = events.order_by('-start_time')
+    elif sort == 'price_low':
+        events = events.order_by('ticket_price')
+    elif sort == 'price_high':
+        events = events.order_by('-ticket_price')
+    elif sort == 'popular':
+        # You might want to implement popularity based on ticket sales
+        events = events.annotate(ticket_count=models.Count('ticket')).order_by('-ticket_count')
+    
+    context = {
+        'events': events,
+    }
+    return render(request, 'events/events.html', context)
+
