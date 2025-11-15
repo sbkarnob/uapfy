@@ -338,3 +338,57 @@ def organizer_analytics(request):
         'recent_tickets': recent_tickets,
     }
     return render(request, 'organizer/analytics.html', context)
+
+@login_required(login_url='login_organizer')
+def organizer_profile(request):
+    organizer_profile = request.user.organizerprofile
+
+    if request.method == 'POST':
+        organization_name = request.POST.get('organization_name')
+        organization_address = request.POST.get('organization_address')
+        contact_number = request.POST.get('contact_number')
+        description = request.POST.get('description')
+        logo = request.FILES.get('logo')  
+
+        organizer_profile.organization_name = organization_name
+        organizer_profile.organization_address = organization_address
+        organizer_profile.contact_number = contact_number
+        organizer_profile.description = description
+
+        if logo:
+            organizer_profile.logo = logo 
+
+        organizer_profile.save()
+
+        return redirect('organizer_profile')  
+
+    context = {
+        'organizer_profile': organizer_profile,
+    }
+    return render(request, 'organizer/profile.html', context)
+
+
+@login_required(login_url='login')
+def user_profile(request):
+    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+
+    if request.method == 'POST':
+        contact_number = request.POST.get('contact_number')
+        address = request.POST.get('address')
+
+        user_profile.contact_number = contact_number
+        user_profile.address = address
+        user_profile.save()
+
+        return redirect('user_profile')  
+
+    context = {
+        'user_profile': user_profile,
+    }
+    return render(request, 'auth/profile.html', context)
+
+
+def ContactUs(request):
+    return render(request, 'contact.html')
+
+
