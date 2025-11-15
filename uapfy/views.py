@@ -226,3 +226,64 @@ def event_view(request):
     }
     return render(request, 'events/events.html', context)
 
+@login_required(login_url='login')
+def eventdetail(request, event_id):
+    event = get_object_or_404(Event, id=event_id, is_active=True)
+    return render(request, 'events/event_detail.html', {'event': event})
+
+@login_required(login_url='login')
+def buy_ticket(request, event_id):
+    event = get_object_or_404(Event, id=event_id, is_active=True)
+    
+    if request.method == 'POST':
+        quantity = int(request.POST.get('quantity', 1))
+        
+        # Check if max attendees limit is reached
+        if event.max_attendees > 0:  # If there is a limit
+            current_ticket_count = Ticket.objects.filter(event=event).count()
+            if current_ticket_count + quantity > event.max_attendees:
+                messages.error(request, "Sorry, this event has limited capacity and cannot accommodate your request.")
+                return redirect('event_detail', event_id=event.id)
+        
+        # Create a new order
+        order = Order.objects.create(
+            user=request.user,
+            subtotal=event.ticket_price * quantity,
+            total=event.ticket_price * quantity,
+            billing_name=request.POST.get('billing_name'),
+            billing_email=request.POST.get('billing_email'),
+            billing_phone=request.POST.get('billing_phone'),
+            billing_address=request.POST.get('billing_address'),
+            payment_method=request.POST.get('payment_method', 'credit_card')
+        )
+        
+        # Create order item
+        OrderItem.objects.create(
+            order=order,
+            event=event,
+            quantity=quantity,
+            unit_price=event.ticket_price
+        )
+        
+        # Create tickets
+        for _ in range(quantity):
+            Ticket.objects.create(
+                user=request.user,
+                event=event,
+                order=order,
+                attendee_name=request.POST.get('attendee_name', request.user.get_full_name()),
+                attendee_email=request.POST.get('attendee_email', request.user.email),
+                attendee_phone=request.POST.get('attendee_phone', '')
+            )
+        
+        # Update order status
+        order.status = 'completed'
+        order.save()
+        
+        messages.success(request, "Ticket purchase successful!")
+        return redirect('my_tickets')
+        
+    context = {
+        'event': event,
+    }
+    return render(request, 'ticket/buy_ticket.html', context)
