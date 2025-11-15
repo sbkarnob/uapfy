@@ -287,3 +287,54 @@ def buy_ticket(request, event_id):
         'event': event,
     }
     return render(request, 'ticket/buy_ticket.html', context)
+
+@login_required(login_url='login')
+def my_tickets(request):
+    tickets = Ticket.objects.filter(user=request.user).order_by('-purchased_at')
+    
+    context = {
+        'tickets': tickets
+    }
+    return render(request, 'ticket/my_tickets.html', context)
+
+@login_required(login_url='login')
+def ticket_detail(request, ticket_id):
+    ticket = get_object_or_404(Ticket, id=ticket_id, user=request.user)
+    
+    context = {
+        'ticket': ticket
+    }
+    return render(request, 'ticket/ticket_detail.html', context)
+
+
+
+
+
+@login_required(login_url='login_organizer')
+def organizer_tickets(request):
+    organizer = request.user.organizerprofile
+    tickets = Ticket.objects.filter(event__organizer=organizer).select_related('event', 'user', 'order').order_by('-purchased_at')
+
+    context = {
+        'tickets': tickets,
+    }
+    return render(request, 'organizer/ticket_list.html', context)
+
+
+@login_required(login_url='login_organizer')
+def organizer_analytics(request):
+    organizer = request.user.organizerprofile
+    events = Event.objects.filter(organizer=organizer)
+    total_events = events.count()
+    total_tickets = Ticket.objects.filter(event__organizer=organizer).count()
+    total_revenue = Ticket.objects.filter(event__organizer=organizer).aggregate(total=models.Sum('order__total'))['total'] or 0
+
+    recent_tickets = Ticket.objects.filter(event__organizer=organizer).order_by('-purchased_at')[:5]
+
+    context = {
+        'total_events': total_events,
+        'total_tickets': total_tickets,
+        'total_revenue': total_revenue,
+        'recent_tickets': recent_tickets,
+    }
+    return render(request, 'organizer/analytics.html', context)
