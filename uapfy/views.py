@@ -98,3 +98,10 @@ def logout_organizer(request):
     auth_logout(request)
     messages.success(request, 'Logged out successfully')
     return redirect('login_organizer')
+
+# Organizer Dashboard
+@login_required(login_url='login_organizer')
+def dashboard(request):
+    organizer = get_object_or_404(OrganizerProfile, user=request.user)
+    return render(request, 'dashboard/dashboard.html', { 'organizer': organizer})
+
