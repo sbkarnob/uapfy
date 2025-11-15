@@ -1,0 +1,183 @@
+{% extends 'sidebar.html' %}
+
+{% block title %}Organizer Profile{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-blue-50 py-10 px-6">
+    <div class="max-w-4xl mx-auto">
+        <!-- Page Header -->
+        <div class="text-center mb-10">
+            <h1 class="text-3xl font-bold text-blue-800">Organization Profile</h1>
+            <p class="text-blue-600 mt-2">Manage your organization information</p>
+        </div>
+
+        <!-- Profile Form -->
+        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+            <div class="p-6 border-b border-gray-200">
+                <h2 class="text-xl font-bold text-gray-800 flex items-center">
+                    <i class="fas fa-building text-blue-600 mr-2"></i> Organization Details
+                </h2>
+            </div>
+
+            <form method="post" enctype="multipart/form-data" class="p-6">
+                {% csrf_token %}
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Left Column -->
+                    <div class="space-y-6">
+                        <!-- Logo Upload -->
+                        <div class="flex flex-col items-center space-y-4">
+                            <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-blue-100 bg-gray-100 flex items-center justify-center">
+                                {% if organizer_profile.logo %}
+                                <img src="{{ organizer_profile.logo.url }}" alt="Organization Logo" class="w-full h-full object-cover">
+                                {% else %}
+                                <i class="fas fa-building text-gray-300 text-5xl"></i>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <label for="logo" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition cursor-pointer flex items-center justify-center">
+                                    <i class="fas fa-camera mr-2"></i> Change Logo
+                                </label>
+                                <input type="file" id="logo" name="logo" class="hidden" accept="image/*">
+                            </div>
+                            <p class="text-sm text-gray-500">Recommended: Square image, at least 200x200px</p>
+                        </div>
+
+                        <!-- Organization Name -->
+                        <div>
+                            <label for="organization_name" class="block text-sm font-medium text-gray-700 mb-1">
+                                Organization Name <span class="text-red-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-building text-gray-400"></i>
+                                </div>
+                                <input type="text" id="organization_name" name="organization_name" value="{{ organizer_profile.organization_name }}" required
+                                    class="pl-10 w-full h-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                        </div>
+                        
+                        <!-- Contact Number -->
+                        <div>
+                            <label for="contact_number" class="block text-sm font-medium text-gray-700 mb-1">
+                                Contact Number
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-phone-alt text-gray-400"></i>
+                                </div>
+                                <input type="text" id="contact_number" name="contact_number" value="{{ organizer_profile.contact_number }}"
+                                    class="pl-10 w-full h-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Column -->
+                    <div class="space-y-6">
+                        <!-- Organization Address -->
+                        <div>
+                            <label for="organization_address" class="block text-sm font-medium text-gray-700 mb-1">
+                                Organization Address
+                            </label>
+                            <div class="relative">
+                                <div class="absolute top-3 left-3 pointer-events-none">
+                                    <i class="fas fa-map-marker-alt text-gray-400"></i>
+                                </div>
+                                <textarea id="organization_address" name="organization_address" rows="3"
+                                    class="pl-10 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent py-2">{{ organizer_profile.organization_address }}</textarea>
+                            </div>
+                        </div>
+                        
+                        <!-- Description -->
+                        <div>
+                            <label for="description" class="block text-sm font-medium text-gray-700 mb-1">
+                                About Your Organization
+                            </label>
+                            <div class="relative">
+                                <div class="absolute top-3 left-3 pointer-events-none">
+                                    <i class="fas fa-info-circle text-gray-400"></i>
+                                </div>
+                                <textarea id="description" name="description" rows="5"
+                                    class="pl-10 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent py-2">{{ organizer_profile.description }}</textarea>
+                            </div>
+                            <p class="mt-1 text-sm text-gray-500">This description will be visible to attendees on your events.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Account Details Section -->
+                <div class="mt-10 pt-6 border-t border-gray-200">
+                    <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
+                        <i class="fas fa-user-circle text-blue-600 mr-2"></i> Account Information
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Username -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-user text-gray-400"></i>
+                                </div>
+                                <input type="text" value="{{ organizer_profile.user.username }}" disabled
+                                    class="pl-10 w-full h-10 border border-gray-200 bg-gray-100 rounded-md text-gray-500">
+                            </div>
+                        </div>
+                        
+                        <!-- Email -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-envelope text-gray-400"></i>
+                                </div>
+                                <input type="email" value="{{ organizer_profile.user.email }}" disabled
+                                    class="pl-10 w-full h-10 border border-gray-200 bg-gray-100 rounded-md text-gray-500">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <p class="text-sm text-gray-500">
+                            <i class="fas fa-info-circle mr-1 text-blue-500"></i>
+                            To change your password or email, please contact support.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Save Button -->
+                <div class="mt-10 flex justify-end">
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 flex items-center">
+                        <i class="fas fa-save mr-2"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    document.getElementById('logo').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            const imageContainer = document.querySelector('.w-32.h-32 img, .w-32.h-32 i');
+            const parent = imageContainer.parentElement;
+            
+            reader.onload = function(event) {
+               
+                parent.innerHTML = '';
+                
+            
+                const img = document.createElement('img');
+                img.src = event.target.result;
+                img.classList.add('w-full', 'h-full', 'object-cover');
+                parent.appendChild(img);
+            }
+            
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+{% endblock %}
