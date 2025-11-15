@@ -1,0 +1,436 @@
+{% extends 'base.html' %}
+{% block title %}{{ event.title }}'s Ticket Purchase{% endblock %}
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-6xl mx-auto">
+        <!-- Page Header -->
+        <div class="text-center mb-10 animate-fade-in-down">
+            <h1 class="text-3xl font-bold text-gray-800">Purchase Tickets</h1>
+        </div>
+        
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Main Form Section -->
+            <div class="lg:w-2/3 bg-white rounded-xl shadow-lg overflow-hidden transform transition hover:shadow-xl">
+                <!-- Event Header with Banner -->
+                {% if event.banner %}
+                <div class="h-40 bg-cover bg-center" style="background-image: url('{{ event.banner.url }}')">
+                    <div class="h-full w-full bg-gradient-to-r from-blue-900/70 to-transparent flex items-center">
+                        <div class="px-6 py-4">
+                            <h2 class="text-2xl font-bold text-white">{{ event.title }}</h2>
+                            <p class="text-blue-100 flex items-center mt-2">
+                                <i class="fas fa-ticket-alt mr-2"></i> Secure your spot now
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="bg-gradient-to-r from-blue-700 to-blue-500 h-40 flex items-center px-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-white">{{ event.title }}</h2>
+                        <p class="text-blue-100 flex items-center mt-2">
+                            <i class="fas fa-ticket-alt mr-2"></i> Secure your spot now
+                        </p>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Event Details -->
+                <div class="p-6 border-b border-gray-200">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-info-circle text-blue-500 mr-2"></i> Event Details
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex items-start">
+                            <i class="fas fa-calendar-day text-blue-500 mt-1 mr-3"></i>
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Date</p>
+                                <p class="text-gray-800">{{ event.start_time|date:"F d, Y" }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <i class="fas fa-clock text-blue-500 mt-1 mr-3"></i>
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Time</p>
+                                <p class="text-gray-800">{{ event.start_time|time:"g:i A" }} - {{ event.end_time|time:"g:i A" }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <i class="fas fa-map-marker-alt text-blue-500 mt-1 mr-3"></i>
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Location</p>
+                                <p class="text-gray-800">{{ event.location }}</p>
+                                {% if event.venue_address %}
+                                <p class="text-gray-600 text-sm">{{ event.venue_address }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <i class="fas fa-users text-blue-500 mt-1 mr-3"></i>
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Capacity</p>
+                                <p class="text-gray-800">
+                                {% if event.max_attendees > 0 %}
+                                    {{ event.max_attendees }} Attendees
+                                {% else %}
+                                    Unlimited
+                                {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Purchase Form -->
+                <form method="post" action="" class="p-6">
+                    {% csrf_token %}
+                    
+                    <!-- Number of tickets -->
+                    <div class="mb-6">
+                        <label for="quantity" class="block text-sm font-medium text-gray-700 mb-1">
+                            <i class="fas fa-ticket-alt text-blue-500 mr-1"></i> Number of Tickets
+                        </label>
+                        <div class="flex items-center">
+                            <button type="button" onclick="decrementQuantity()" class="bg-gray-200 hover:bg-gray-300 text-gray-600 h-10 w-10 rounded-l-md flex items-center justify-center transition-colors duration-200">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <input type="number" id="quantity" name="quantity" value="1" min="1" required
+                                class="h-10 border-y border-gray-300 px-4 text-center w-20 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <button type="button" onclick="incrementQuantity()" class="bg-gray-200 hover:bg-gray-300 text-gray-600 h-10 w-10 rounded-r-md flex items-center justify-center transition-colors duration-200">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <span class="ml-4 text-blue-600 font-medium">
+                                ৳ {{ event.ticket_price }} per ticket
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Attendee Information -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-user-circle text-blue-500 mr-2"></i> Attendee Information
+                        </h3>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label for="attendee_name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-user text-gray-400"></i>
+                                    </div>
+                                    <input type="text" id="attendee_name" name="attendee_name" value="{{ request.user.get_full_name }}" required
+                                        class="pl-10 w-full h-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow duration-200">
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label for="attendee_email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-envelope text-gray-400"></i>
+                                    </div>
+                                    <input type="email" id="attendee_email" name="attendee_email" value="{{ request.user.email }}" required
+                                        class="pl-10 w-full h-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow duration-200">
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label for="attendee_phone" class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-phone-alt text-gray-400"></i>
+                                    </div>
+                                    <input type="text" id="attendee_phone" name="attendee_phone" required
+                                        class="pl-10 w-full h-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow duration-200">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Billing Information -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-file-invoice text-blue-500 mr-2"></i> Billing Information
+                        </h3>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label for="billing_name" class="block text-sm font-medium text-gray-700 mb-1">Billing Name</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-user-tag text-gray-400"></i>
+                                    </div>
+                                    <input type="text" id="billing_name" name="billing_name" value="{{ request.user.get_full_name }}" required
+                                        class="pl-10 w-full h-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow duration-200">
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="billing_email" class="block text-sm font-medium text-gray-700 mb-1">Billing Email</label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="fas fa-envelope text-gray-400"></i>
+                                        </div>
+                                        <input type="email" id="billing_email" name="billing_email" value="{{ request.user.email }}" required
+                                            class="pl-10 w-full h-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow duration-200">
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label for="billing_phone" class="block text-sm font-medium text-gray-700 mb-1">Billing Phone</label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="fas fa-phone-alt text-gray-400"></i>
+                                        </div>
+                                        <input type="text" id="billing_phone" name="billing_phone" required
+                                            class="pl-10 w-full h-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow duration-200">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label for="billing_address" class="block text-sm font-medium text-gray-700 mb-1">Billing Address</label>
+                                <div class="relative">
+                                    <div class="absolute top-3 left-3 pointer-events-none">
+                                        <i class="fas fa-home text-gray-400"></i>
+                                    </div>
+                                    <textarea id="billing_address" name="billing_address" rows="3" required
+                                        class="pl-10 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow duration-200 py-2"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Payment Method -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-credit-card text-blue-500 mr-2"></i> Payment Method
+                        </h3>
+                        
+                        <div class="relative">
+                            <select id="payment_method" name="payment_method" required
+                                class="w-full h-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent pl-10 pr-10 appearance-none transition-shadow duration-200">
+                                <option value="credit_card">Credit Card</option>
+                                <option value="paypal">Bkash</option>
+                                <option value="bank_transfer">Nagad</option>
+                                <option value="other">Other</option>
+                            </select>
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-money-check-alt text-gray-400"></i>
+                            </div>
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                <i class="fas fa-chevron-down text-gray-400"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- Credit card details -->
+                        <div id="credit_card_details" class="mt-4 p-4 border border-gray-200 rounded-lg bg-gray-50 animate-fade-in">
+                            <div class="space-y-4">
+                                <div>
+                                    <label for="card_number" class="block text-sm font-medium text-gray-700 mb-1">Card Number</label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="far fa-credit-card text-gray-400"></i>
+                                        </div>
+                                        <input type="text" id="card_number" placeholder="XXXX XXXX XXXX XXXX"
+                                            class="pl-10 w-full h-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow duration-200">
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="expiry_date" class="block text-sm font-medium text-gray-700 mb-1">Expiry Date</label>
+                                        <div class="relative">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <i class="far fa-calendar-alt text-gray-400"></i>
+                                            </div>
+                                            <input type="text" id="expiry_date" placeholder="MM/YY"
+                                                class="pl-10 w-full h-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow duration-200">
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="cvv" class="block text-sm font-medium text-gray-700 mb-1">CVV</label>
+                                        <div class="relative">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <i class="fas fa-lock text-gray-400"></i>
+                                            </div>
+                                            <input type="text" id="cvv" placeholder="XXX"
+                                                class="pl-10 w-full h-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow duration-200">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Total and Submit Button -->
+                    <div class="mt-8 flex flex-col sm:flex-row justify-between items-center">
+                        <div class="mb-4 sm:mb-0">
+                            <span class="text-gray-600 font-medium">Total:</span>
+                            <span class="text-2xl font-bold text-blue-600 ml-2">৳ <span id="total-price">{{ event.ticket_price }}</span></span>
+                        </div>
+                        
+                        <button type="submit" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <i class="fas fa-lock mr-2"></i> Complete Purchase
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Order Summary Sidebar -->
+            <div class="lg:w-1/3">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden transform transition hover:shadow-xl sticky top-8">
+                    <div class="bg-gradient-to-r from-blue-600 to-blue-800 px-6 py-4">
+                        <h2 class="text-xl font-bold text-white flex items-center">
+                            <i class="fas fa-shopping-cart mr-2"></i> Order Summary
+                        </h2>
+                    </div>
+                    
+                    <div class="p-6">
+                        <!-- Event Info -->
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-ticket-alt text-blue-600 text-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-medium text-gray-900">{{ event.title }}</h3>
+                                <p class="text-sm text-gray-500">{{ event.start_time|date:"F d, Y" }}</p>
+                                
+                            </div>
+                        </div>
+                        
+                        <!-- Summary Details -->
+                        <div class="mt-6 space-y-3 text-gray-700">
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center">
+                                    <i class="fas fa-dollar-sign text-gray-400 mr-2 w-5 text-center"></i>
+                                    <span>Price per ticket</span>
+                                </div>
+                                <span>৳ {{ event.ticket_price }}</span>
+                            </div>
+                            
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center">
+                                    <i class="fas fa-layer-group text-gray-400 mr-2 w-5 text-center"></i>
+                                    <span>Quantity</span>
+                                </div>
+                                <span id="summary-quantity" class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full text-sm">1</span>
+                            </div>
+                            
+                            <div class="border-t border-gray-200 my-4 pt-4">
+                                <div class="flex justify-between items-center text-lg font-medium">
+                                    <span>Total</span>
+                                    <span class="text-blue-600">৳ <span id="summary-total">{{ event.ticket_price }}</span></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Security Badge -->
+                        <div class="mt-8 border-t border-gray-200 pt-4">
+                            <div class="flex items-center justify-center text-sm text-gray-500">
+                                <i class="fas fa-shield-alt text-green-500 mr-2"></i>
+                                <span>Secure payment & confirmation</span>
+                            </div>
+                            
+                            <div class="mt-4 flex justify-center space-x-4">
+                                <i class="fab fa-cc-visa text-gray-400 text-2xl"></i>
+                                <i class="fab fa-cc-mastercard text-gray-400 text-2xl"></i>
+                                <i class="fab fa-cc-amex text-gray-400 text-2xl"></i>
+                                <i class="fab fa-cc-paypal text-gray-400 text-2xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const quantityInput = document.getElementById('quantity');
+        const totalPriceSpan = document.getElementById('total-price');
+        const summaryQuantitySpan = document.getElementById('summary-quantity');
+        const summaryTotalSpan = document.getElementById('summary-total');
+        const pricePerTicket = parseFloat("{{ event.ticket_price|default:0.00 }}");
+        
+        function updatePrice() {
+            const quantity = parseInt(quantityInput.value) || 1; // Fallback to 1
+            const total = quantity * pricePerTicket;
+            
+            totalPriceSpan.textContent = total.toFixed(2);
+            summaryQuantitySpan.textContent = quantity;
+            summaryTotalSpan.textContent = total.toFixed(2);
+        }
+        
+        // Increment and decrement functions for quantity
+        window.incrementQuantity = function() {
+            quantityInput.value = parseInt(quantityInput.value) + 1 || 2;
+            updatePrice();
+        };
+        
+        window.decrementQuantity = function() {
+            const currentVal = parseInt(quantityInput.value) || 2;
+            if (currentVal > 1) {
+                quantityInput.value = currentVal - 1;
+                updatePrice();
+            }
+        };
+        
+        // Quantity input change handlers
+        quantityInput.addEventListener('change', updatePrice);
+        quantityInput.addEventListener('input', updatePrice);
+        
+        // Payment method toggle
+        const paymentMethodSelect = document.getElementById('payment_method');
+        const creditCardDetails = document.getElementById('credit_card_details');
+        
+        if (paymentMethodSelect) {
+            paymentMethodSelect.addEventListener('change', function () {
+                if (this.value === 'credit_card') {
+                    creditCardDetails.style.display = 'block';
+                    creditCardDetails.classList.add('animate-fade-in');
+                } else {
+                    creditCardDetails.style.display = 'none';
+                }
+            });
+        }
+        
+        // Initialize
+        updatePrice();
+    });
+</script>
+
+<style>
+    /* Custom animations */
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    .animate-fade-in-down {
+        animation: fadeInDown 0.5s ease-out;
+    }
+    
+    .animate-fade-in {
+        animation: fadeIn 0.3s ease-out;
+    }
+</style>
+
+{% endblock %}
