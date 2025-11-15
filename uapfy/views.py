@@ -73,3 +73,28 @@ def register_organizer(request):
         return redirect('login_organizer')
 
     return render(request, 'auth/register_organizer.html')
+
+# Organizer Login
+def login_organizer(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            auth_login(request, user)
+            messages.success(request, 'Login successful')
+            return redirect('dashboard') 
+        else:
+            messages.error(request, 'Invalid credentials')
+            return redirect('login_organizer')
+
+    return render(request, 'auth/login_organizer.html')
+
+
+# Organizer Logout
+@login_required(login_url='login_organizer')
+def logout_organizer(request):
+    auth_logout(request)
+    messages.success(request, 'Logged out successfully')
+    return redirect('login_organizer')
