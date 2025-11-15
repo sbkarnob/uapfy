@@ -105,3 +105,79 @@ def dashboard(request):
     organizer = get_object_or_404(OrganizerProfile, user=request.user)
     return render(request, 'dashboard/dashboard.html', { 'organizer': organizer})
 
+# Event Creation
+@login_required(login_url='login_organizer')
+def event_list(request):
+    organizer = get_object_or_404(OrganizerProfile, user=request.user)
+    events = Event.objects.filter(organizer=organizer).order_by('-created_at')
+    return render(request, 'events/event_list.html', {'events': events})
+
+@login_required(login_url='login_organizer')
+def create_event(request):
+    if request.method == 'POST':
+        organizer = get_object_or_404(OrganizerProfile, user=request.user)
+        title = request.POST['title']
+        description = request.POST['description']
+        location = request.POST['location']
+        venue_address = request.POST.get('venue_address', '')
+        start_time = request.POST['start_time']
+        end_time = request.POST['end_time']
+        max_attendees = request.POST.get('max_attendees', 0)
+        ticket_price = request.POST.get('ticket_price', 0.00)
+        category_ids = request.POST.getlist('categories')
+        banner = request.FILES.get('banner')
+
+        event = Event.objects.create(
+            organizer=organizer,
+            title=title,
+            description=description,
+            location=location,
+            venue_address=venue_address,
+            start_time=start_time,
+            end_time=end_time,
+            max_attendees=max_attendees,
+            ticket_price=ticket_price,
+            banner=banner
+        )
+
+        event.categories.set(category_ids)
+        messages.success(request, 'Event created successfully')
+        return redirect('event_list')
+
+    categories = EventCategory.objects.all()
+    return render(request, 'events/event_form.html', {'categories': categories, 'event': None})
+
+@login_required(login_url='login_organizer')
+def update_event(request, event_id):
+    event = get_object_or_404(Event, id=event_id, organizer__user=request.user)
+
+    if request.method == 'POST':
+        event.title = request.POST['title']
+        event.description = request.POST['description']
+        event.location = request.POST['location']
+        event.venue_address = request.POST.get('venue_address', '')
+        event.start_time = request.POST['start_time']
+        event.end_time = request.POST['end_time']
+        event.max_attendees = request.POST.get('max_attendees', 0)
+        event.ticket_price = request.POST.get('ticket_price', event.ticket_price)
+        event.status = request.POST.get('status', event.status)
+
+        if 'banner' in request.FILES:
+            event.banner = request.FILES['banner']
+
+        category_ids = request.POST.getlist('categories')
+        event.categories.set(category_ids)
+
+        event.save()
+        messages.success(request, 'Event updated successfully')
+        return redirect('event_list')
+
+    categories = EventCategory.objects.all()
+    return render(request, 'events/event_form.html', {'event': event, 'categories': categories})
+
+@login_required
+def delete_event(request, event_id):
+    event = get_object_or_404(Event, id=event_id, organizer__user=request.user)
+    event.delete()
+    messages.success(request, 'Event deleted successfully')
+    return redirect('event_list')
