@@ -54,3 +54,22 @@ def logout(request):
     auth_logout(request)
     messages.success(request, 'Logged out successfully')
     return redirect('login')
+
+# Organizer Registration
+def register_organizer(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password']
+        organization_name = request.POST['organization_name']
+        
+        if User.objects.filter(username=username).exists():
+            messages.error(request, 'Username already exists')
+            return redirect('register_organizer')
+
+        user = User.objects.create_user(username=username, password=password, email=email)
+        OrganizerProfile.objects.create(user=user, organization_name=organization_name)  
+        messages.success(request, 'Organizer account created successfully')
+        return redirect('login_organizer')
+
+    return render(request, 'auth/register_organizer.html')
